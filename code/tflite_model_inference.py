@@ -4,6 +4,8 @@ from PIL import Image
 from tensorflow.keras.applications.mobilenet import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array, load_img
 
+# Define the class names
+class_names = ['Aluminum Can', 'Glass', 'HDPE', 'PET']
 
 # Load TFLite model and allocate tensors
 interpreter = tf.lite.Interpreter(model_path="trash_model_v1.tflite")
@@ -50,5 +52,6 @@ image_path = "plastic_bottles/testing/1662500498.5266643.jpg"
 prediction = run_inference(image_path)
 
 # Assuming a classification model, find the class with the highest probability
-predicted_class = np.argmax(prediction)
-print("Predicted class:", predicted_class)
+predicted_class_index = np.argmax(prediction)
+predicted_class_label = class_names[predicted_class_index]
+print("Predicted class:", predicted_class_label)
