@@ -10,7 +10,7 @@ predicted_class_label=$(<temp_output.txt)
 export predicted_class_label
 
 # Run test2.py
-python  pi_controlling_multiple_CNC_arduinos.py
+sudo python pi_controlling_multiple_CNC_arduinos.py
 
 # Cleanup: Remove the temporary file
 rm temp_output.txt
