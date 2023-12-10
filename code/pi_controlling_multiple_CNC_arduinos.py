@@ -1,3 +1,4 @@
+import os
 import serial
 import time
 
@@ -89,7 +90,11 @@ def reset_serial_connection(arduino):
     arduino.open()
 #Main Loop
 while True:
-    trash_type = input("Enter trash type (or 'q' to quit):").strip()
+    with open('temp_output.txt', 'r') as file:
+        trash_type = file.readline().strip()
+        print(trash_type)
+        time.sleep(2)
+    #trash_type = input("Enter trash type (or 'q' to quit):").strip()
     if trash_type.lower() == 'q':
         break
     perform_actions(trash_type)
@@ -97,22 +102,10 @@ while True:
     for arduino in arduino_connections.values():
         if arduino:
             reset_serial_connection(arduino)
-   
-#Tensor flow ID loop
-#while True:
-   # image = get_image() #implement image capture
-   # trash_type = identify_trash(image)
-   # perform_actions(trash_type)
-  
+    
+    break
   
 #cleanup: close all serial connections
 for ser in arduino_connections.values():
     if ser:
         ser.close()
-
-#delay(1000)
-#send_to_grbl("G1 X10 F1000") #Move to X=10mm
-#send_to_grbl("M18") #Disable Steppers
-
-#Close the serial connection
-#ser.close()
