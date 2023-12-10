@@ -1,11 +1,16 @@
 import numpy as np
 import tensorflow as tf
 from PIL import Image
+
+from picamera import PiCamera
+from time import sleep
+import time
+
 from tensorflow.keras.applications.mobilenet import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array, load_img
 
 # Define the class names
-class_names = ['Aluminum Can', 'Glass', 'HDPE', 'PET']
+class_names = ['AluCan', 'Glass', 'HDPEM', 'PET']
 
 # Load TFLite model and allocate tensors
 interpreter = tf.lite.Interpreter(model_path="trash_model_v1.tflite")
@@ -15,6 +20,7 @@ interpreter.allocate_tensors()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
+#print('tensorflow and tensors loaded')
 
 def load_and_preprocess_image(image_path, target_size=(224, 224)):
     # Load the image
@@ -47,11 +53,18 @@ def run_inference(image_path):
     output_data = interpreter.get_tensor(output_details[0]['index'])
     return output_data
 
-# Example usage
-image_path = "plastic_bottles/testing/1662500498.5266643.jpg"
+# Camera usage
+camera = PiCamera()
+camera.start_preview()
+sleep(5)
+date =str(time.time())
+image_path = '/home/pi/Desktop/images/trash_test/'+date +'.jpg'
+#image_path = '/home/pi/Desktop/images/aluminum/1662492688.710733.jpg'
+camera.capture(image_path)
+camera.stop_preview()
 prediction = run_inference(image_path)
 
 # Assuming a classification model, find the class with the highest probability
 predicted_class_index = np.argmax(prediction)
 predicted_class_label = class_names[predicted_class_index]
-print("Predicted class:", predicted_class_label)
+print(predicted_class_label)
